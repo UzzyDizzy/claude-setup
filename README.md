@@ -24,8 +24,10 @@ claude-setup/                       # this repo
 ## One-time install (per project)
 
 ```bash
+# clone thie repo in project root
+git clone https://github.com/UzzyDizzy/claude-setup.git
 # from your project root
-python /path/to/claude-setup/claude-setup.py
+python ./claude-setup/claude-setup.py
 # then drop CLAUDE.md into the project root
 cp /path/to/claude-setup/CLAUDE.md ./CLAUDE.md
 ```
