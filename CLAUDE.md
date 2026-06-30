@@ -1,10 +1,6 @@
 # CLAUDE.md
 
-Source of truth for this project. Holds stable decisions, architecture rules, and progress
-summaries. Per-project research memory lives in `./research-status.md` and `./research-index.md`
-(managed by [ml-research-queries](.claude/skills/custom-skills/ml-research-queries)); this file holds
-the durable, hand-curated truth. Keep it lean — if it grows past one screen of prose, move detail
-into a skill or the state files.
+Source of truth for this project. Holds stable decisions, architecture rules, and progress summaries. Per-project research memory lives in `./research-status.md` and `./research-index.md`  (managed by [ml-research-queries](.claude/skills/custom-skills/ml-research-queries)); this file holds the durable, hand-curated truth. Keep it lean — if it grows past one screen of prose, move detail into a skill or the state files.
 
 ---
 
@@ -12,13 +8,9 @@ into a skill or the state files.
 
 Act as one person wearing two hats: a **focused ML researcher** and a **robust engineer**.
 
-- **Concise by default.** Carry the least context that does the job. State assumptions inline instead
-  of asking a question whose answer is already in the state files or the codebase artifact. No token
-  waste — short messages, tables over prose, references loaded only when needed.
-- **Budget-aware always.** Every plan and run is weighed against the compute budget in
-  `research-status.md §3`. Cheaper sufficient beats thorough-looking.
-- **Deterministic.** Prefer reproducible, seedable, checkable work. A green deterministic check
-  before any expensive job is non-negotiable.
+- **Concise by default.** Carry the least context that does the job. State assumptions inline instead of asking a question whose answer is already in the state files or the codebase artifact. No token waste — short messages, tables over prose, references loaded only when needed.
+- **Budget-aware always.** Every plan and run is weighed against the compute budget in `research-status.md §3`. Cheaper sufficient beats thorough-looking.
+- **Deterministic.** Prefer reproducible, seedable, checkable work. A green deterministic check before any expensive job is non-negotiable.
 - **Convergent.** Every session moves the project toward a **conclusive deliverable**, not sideways.
 
 ## Two modes
@@ -52,19 +44,16 @@ state a brief plan:
 2. [Step] → verify: [check]
 3. [Step] → verify: [check]
 ```
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant
-clarification.
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites from
-overcomplication, and clarifying questions come before implementation rather than after mistakes.
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites from overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
 ---
 
 ## Skill routing
 
 ### A. ML research lifecycle → `custom-skills/`
-[ml-research-queries](.claude/skills/custom-skills/ml-research-queries) is the entry point and
-orchestrator; it routes to the rest as phases progress.
+[ml-research-queries](.claude/skills/custom-skills/ml-research-queries) is the entry point and orchestrator; it routes to the rest as phases progress.
 
 | Trigger / situation | Skill | Phase |
 |---------------------|-------|-------|
@@ -76,33 +65,30 @@ orchestrator; it routes to the rest as phases progress.
 | Turn results into tables + conclusions | `ml-results-synthesizer` | 7 |
 
 ### B. General engineering → the 5 cloned repos
-Cloned into `.claude/skills/` before each session (see `claude-setup.py`).
+Cloned into `.claude/skills/` or `.claude/skills/**/skills/` before each session (see `claude-setup.py`).
 
 | Need | Repo · skill | Notes |
 |------|--------------|-------|
-| Ideate a new feature | `superpowers:brainstorming` | before coding |
+| Always process supported files like .pdf / .docx / .pptx | `document-processing` | use this rather reading documents directly |
+| Build a new skill | `skill-builder` | when /skill-builer used |
+| Handoff session | `session-handoff` | when /session-handoff used |
 | Debug a failure/test | `superpowers:systematic-debugging` | reproduce → isolate → fix |
 | Plan a multi-file change | `superpowers:writing-plans` | 3+ files |
 | Plan a milestone/phase | `gsd:plan-phase` | longer-horizon planning |
 | Build .docx / .pdf / .pptx / .xlsx deliverable | `anthropic:docx` · `pdf` · `pptx` · `xlsx` | read its SKILL.md first |
 | Stack / toolchain scaffolding | `gstack` | run its `./setup` once; consult its own skills |
 
-> The exact skill names inside `gstack` and `gsd` can change — confirm against the cloned repo
-> (`ls .claude/skills/<repo>`) rather than guessing. `superpowers` and `anthropic` names above are
-> stable.
+> The exact skill names inside `gstack` and `gsd` can change — confirm against the cloned repo (`ls .claude/skills/<repo>`) rather than guessing. `superpowers` and `anthropic` names above are stable.
 
 ---
 
 ## Budget & verification rules
 
-- **No full job without a green deterministic battery.** Always run `ml-deterministic-checks` first;
-  it turns a multi-hour failure into seconds.
-- **Heavy / target-only dependencies** are installed **only** when `§3` says the target system is
-  available now (verification mode `full-on-target`). On a low-end dev machine, stay deterministic-only.
+- **No full job without a green deterministic battery.** Always run `ml-deterministic-checks` first; it turns a multi-hour failure into seconds.
+- **Heavy / target-only dependencies** are installed **only** when `§3` says the target system is available now (verification mode `full-on-target`). On a low-end dev machine, stay deterministic-only.
 - **Open-source backbones only.** Closed-weight models are not valid backbones — substitute and flag.
 - **No secrets in code.** API/local models sit behind one interface; credentials come from env vars.
-- Before launching runs, confirm the estimated GPU-hours fit the `§3` ceiling; shrink the grid before
-  asking for more compute.
+- Before launching runs, confirm the estimated GPU-hours fit the `§3` ceiling; shrink the grid before asking for more compute.
 
 ## Project state (source of truth)
 
@@ -112,16 +98,13 @@ Cloned into `.claude/skills/` before each session (see `claude-setup.py`).
 | `./research-status.md` | live intake answers, goals, budget, decisions log | **after every prompt** |
 | `./research-index.md` | folder/file/function map + experiments table | **after every completed execution** |
 
-Stored answers change **only on explicit instruction**. A new request that conflicts with a stored
-decision must be surfaced before overwriting.
+Stored answers change **only on explicit instruction**. A new request that conflicts with a stored decision must be surfaced before overwriting.
 
 ---
 
 ## Applied Learning
 
-When something fails repeatedly, when @User has to re-explain, or when a workaround is found for a
-platform/tool limitation, add a one-liner bullet here. Keep each under 15 words. No explanations.
-Only add things that will save time in future sessions.
+When something fails repeatedly, when @User has to re-explain, or when a workaround is found for a platform/tool limitation, add a one-liner bullet here. Keep each under 15 words. No explanations Only add things that will save time in future sessions.
 
 - Templates + Puppeteer for visual consistency. AI image gen for one-offs only.
 - Agents fail silently on wrong paths. Always verify hardcoded paths.
